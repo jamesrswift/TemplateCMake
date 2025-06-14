@@ -1,0 +1,5 @@
+include(CheckIPOSupported)
+check_ipo_supported(RESULT result)
+if(result)
+  set_property(GLOBAL PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+endif()

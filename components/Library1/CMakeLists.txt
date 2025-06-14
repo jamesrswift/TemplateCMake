@@ -4,10 +4,16 @@ Project(Library1 VERSION 1.0
 
 file(GLOB_RECURSE SOURCES "*.cpp")
 
-add_library(Library1 ${SOURCES})
-target_include_directories(Library1
+add_library(Library1_exe ${SOURCES})
+
+target_include_directories(Library1_exe
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
-SET( PROJECT_PUBLIC_TARGETS Library1 ${PROJECT_PUBLIC_TARGETS} )
+
+SET(LIBRARY1_TARGETS Library1_exe)
+
+get_property(_targets GLOBAL PROPERTY PROJECT_COMPONENT_TARGETS)
+list(APPEND _targets ${LIBRARY1_TARGETS})
+set_property(GLOBAL PROPERTY PROJECT_COMPONENT_TARGETS "${_targets}")

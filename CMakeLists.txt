@@ -6,21 +6,26 @@ project(MyProject VERSION 1.0.0
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+SET(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include(cmake/externSubmodules.cmake)
+# include(cmake/externSubmodules.cmake)
+include(cmake/defaultBuildType.cmake)
+include(cmake/IPO.cmake)
 
 #------------------------------
 # Handle includes
 
 configure_file (
     "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/Version.h.in"
-    "${PROJECT_BINARY_DIR}/include/${PROJECT_NAME}/Version.h"
+    "${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/Version.h"
 )
 
 include_directories(include)
+
+file(GLOB_RECURSE SOURCES "src/*.cpp")
 
 file(GLOB_RECURSE HEADERS_H "headers/*.h")
 file(GLOB_RECURSE HEADERS_HPP "headers/*.hpp")
@@ -32,7 +37,7 @@ SET(HEADERS ${HEADERS_H} ${HEADERS_HPP} ${HEADERS_HXX})
 
 add_subdirectory(components)
 
-add_library(${PROJECT_NAME} INTERFACE ${HEADERS})
+add_library(${PROJECT_NAME} OBJECT ${SOURCES} ${HEADERS})
 target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_PUBLIC_TARGETS})
 
 
@@ -45,7 +50,7 @@ add_subdirectory(apps)
 # Handle installation
 
 install(TARGETS ${PROJECT_NAME}
-        EXPORT ${PROJECT_PUBLIC_TARGETS}
+        EXPORT ${PROJECT_PUBLIC_TARGETS} ${PROJECT_APPLICATION_TARGETS} ${HEADERS}
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
@@ -57,6 +62,10 @@ install(TARGETS ${PROJECT_NAME}
 # Handle Testing
 # Testing only available if this is the main app
 # Emergency override MODERN_CMAKE_BUILD_TESTING provided as well
+
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+    include(CTest)
+endif()
 
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)
    AND BUILD_TESTING)
