@@ -1,0 +1,15 @@
+@INCLUDE_PATH           = @CMAKE_SOURCE_DIR@
+OUTPUT_DIRECTORY        = @CMAKE_SOURCE_DIR@/docs
+GENERATE_HTML           = YES
+GENERATE_LATEX          = NO
+INPUT                   = @CMAKE_SOURCE_DIR@/include \
+                          @CMAKE_SOURCE_DIR@/components \
+                          @CMAKE_SOURCE_DIR@/apps
+FILE_PATTERNS           = *.h *.hpp *.cpp
+RECURSIVE               = YES
+EXTRACT_ALL             = YES
+QUIET                   = YES
+
+PROJECT_NAME           = @CMAKE_PROJECT_NAME@
+PROJECT_NUMBER         = @CMAKE_PROJECT_VERSION@
+PROJECT_BRIEF          = @CMAKE_PROJECT_DESCRIPTION@
